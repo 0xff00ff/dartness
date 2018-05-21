@@ -1,15 +1,44 @@
+import 'dart:io';
+import 'dart:isolate';
+
 import 'package:dartness/dartness.dart';
-import 'package:dartness/context.dart';
 
 void main() {
-  Dartness app = new Dartness();
-  app.use((Context context) {
-    context.req.response.write('middleware 1');
-    return context;
+
+  final app = new Dartness();
+
+  app.use((Context context) async {
+    //print('middleware 1');
+  }, catchError: false);
+
+  app.use((Context context) async {
+    //print('middleware 1.5');
   });
-  app.use((Context context) {
-    context.req.response.write('middleware 2');
-    return context;
+
+  final router = new Router();
+
+  router.get('/:param1/:param2/:param3', (Context context) async {
+    print ('GET /:hello ' + context.uriParams.toString());
   });
-  app.listen();
+
+  router.get('/', (Context context) async => null);
+  router.post('/', (Context context) async => print(context.req.body['message']['text']));
+
+  app.use(router);
+
+  app.use((Context context) async {
+    // print('sending response');
+    context.res..headers.add(HttpHeaders.CONTENT_TYPE, 'application/json')
+      ..write('{"qe": "asd", "zxc": 4}')
+      ..close();
+  });
+
+  app.use((Context context) async {
+    print('wow, here is was an error!');
+    context.res.write('middleware 2');
+  }, catchError: true);
+
+  app.listen(host: InternetAddress.ANY_IP_V4, port: 4040);
+
 }
+
