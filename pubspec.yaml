@@ -1,9 +1,11 @@
 name: "dartness"
-version: "0.0.13"
-author: "0xff00ff"
+version: "0.0.14"
+author: "0xff00ff@gmail.com"
 description: "micro framework for dart"
 homepage: "https://github.com/0xff00ff/dartness"
 dependencies:
-  body_parser: "^1.1.0"
+  body_parser: ">=1.1.0"
 dev_dependencies:
-  test: "^0.12.37"
+  test: ">=0.12.37"
+environment:
+  sdk: '>=2.0.0-dev.40.0'
