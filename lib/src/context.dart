@@ -5,6 +5,7 @@ class ContextRequest {
 
   HttpRequest _req;
   Map<String, dynamic> body = <String, dynamic>{};
+  Map<String, String> params = {};
 
   ContextRequest(this._req);
 
@@ -43,7 +44,6 @@ class ContextResponse {
 class Context {
   ContextRequest req;
   ContextResponse res;
-  Map<String, String> uriParams = {};
 
   Map<String, Object> locals = {};
 

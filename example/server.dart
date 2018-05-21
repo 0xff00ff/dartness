@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:dartness/dartness.dart';
 
@@ -18,7 +17,7 @@ void main() {
   final router = new Router();
 
   router.get('/:param1/:param2/:param3', (Context context) async {
-    print ('GET /:hello ' + context.uriParams.toString());
+    print ('GET /:hello ' + context.req.params.toString());
   });
 
   router.get('/', (Context context) async => null);

@@ -44,7 +44,7 @@ class Router implements Callable {
   Future<void> call(Context context) async {
     for (var routeItem in _routes) {
       if (routeItem.isMatching(context.req.method, context.req.requestedUri)) {
-        context.uriParams = routeItem.params;
+        context.req.params = routeItem.params;
         return routeItem.callback(context);
       }
     }
