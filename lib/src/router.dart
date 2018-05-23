@@ -14,7 +14,6 @@ class HttpMethod {
 }
 
 class Router implements Callable {
-
   final List<Route> _routes = [];
   @override
   bool catchError = false;
@@ -26,14 +25,18 @@ class Router implements Callable {
     _basePath = basePath;
   }
 
-  void get(String path, Function callback) async => route(HttpMethod.get, path, callback);
-  void post(String path, Function callback)  async => route(HttpMethod.post, path, callback);
-  void patch(String path, Function callback)  async => route(HttpMethod.patch, path, callback);
-  void put(String path, Function callback)  async => route(HttpMethod.put, path, callback);
-  void delete(String path, Function callback)  async => route(HttpMethod.delete, path, callback);
+  void get(String path, Function callback) async =>
+      route(HttpMethod.get, path, callback);
+  void post(String path, Function callback) async =>
+      route(HttpMethod.post, path, callback);
+  void patch(String path, Function callback) async =>
+      route(HttpMethod.patch, path, callback);
+  void put(String path, Function callback) async =>
+      route(HttpMethod.put, path, callback);
+  void delete(String path, Function callback) async =>
+      route(HttpMethod.delete, path, callback);
 
   void route(String method, String path, Function callback) async {
-
     path = _basePath + path.replaceAll(new RegExp('(^\/|\/\$)'), '');
     path = path.replaceAll('//', '/');
 
@@ -49,5 +52,4 @@ class Router implements Callable {
       }
     }
   }
-
 }

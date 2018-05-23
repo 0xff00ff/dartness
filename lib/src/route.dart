@@ -1,7 +1,6 @@
 import 'dart:math';
 
 class Route {
-
   String path = '';
   String method = 'GET';
   Function callback;
@@ -39,6 +38,4 @@ class Route {
 
     return true;
   }
-
-
 }

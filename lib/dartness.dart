@@ -12,10 +12,9 @@ export 'package:dartness/src/callable.dart';
 export 'package:dartness/src/router.dart';
 
 class Dartness {
-
   final List<Callable> _middlewareStack = [];
 
-  void use(Function middleware, {bool catchError: false}){
+  void use(Function middleware, {bool catchError: false}) {
     final callable = new Callable(middleware, catchError: catchError);
     _middlewareStack.add(callable);
   }
@@ -25,50 +24,51 @@ class Dartness {
     host ??= InternetAddress.ANY_IP_V4;
 
     final http = await HttpServer.bind(host, port, shared: true);
-      await for (final HttpRequest req in http) {
-        final start = new DateTime.now();
-        final context = new Context(req);
-         if (req.method == HttpMethod.post || req.method == HttpMethod.put || req.method == HttpMethod.patch) {
-           final body = await parseBody(req);
-           context.req.body = body.body;
-         }
-        var isError = false;
-        for (var middleware in _middlewareStack) {
-          try {
-            if (isError) {
-              if (middleware.catchError) {
-                await middleware.call(context);
-                isError = false;
-              } else {
-                continue;
-              }
-            }
-            else if (middleware.catchError == false) {
-              await middleware.call(context);
-            }
-          } catch(e) {
-            print('catched an error');
-            print(e);
-            isError = true;
-          }
-
-          if (context.res.isClosed()) {
-            break;
-          }
-        }
-
-        if (!context.res.isClosed()) {
-          context.res.close();
-        }
-        final finish = new DateTime.now().difference(start);
-        print('[dartness] request time: ' + finish.inMilliseconds.toString());
+    await for (final HttpRequest req in http) {
+      final start = new DateTime.now();
+      final context = new Context(req);
+      if (req.method == HttpMethod.post ||
+          req.method == HttpMethod.put ||
+          req.method == HttpMethod.patch) {
+        final body = await parseBody(req);
+        context.req.body = body.body;
       }
+      var isError = false;
+      for (var middleware in _middlewareStack) {
+        try {
+          if (isError) {
+            if (middleware.catchError) {
+              await middleware.call(context);
+              isError = false;
+            } else {
+              continue;
+            }
+          } else if (middleware.catchError == false) {
+            await middleware.call(context);
+          }
+        } catch (e) {
+          print('catched an error');
+          print(e);
+          isError = true;
+        }
+
+        if (context.res.isClosed()) {
+          break;
+        }
+      }
+
+      if (!context.res.isClosed()) {
+        context.res.close();
+      }
+      final finish = new DateTime.now().difference(start);
+      print('[dartness] request time: ' + finish.inMilliseconds.toString());
+    }
   }
 }
 
 Future<void> staticFileHandler(String path) async {
   final router = new Router();
-  router.get(path, (Context context){
+  router.get(path, (Context context) {
     context.res.write('static');
     context.res.close();
   });

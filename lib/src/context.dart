@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:async';
 
 class ContextRequest {
-
   HttpRequest _req;
   Map<String, dynamic> body = <String, dynamic>{};
   Map<String, String> params = {};
@@ -13,11 +12,9 @@ class ContextRequest {
   String get method => _req.method;
   Uri get requestedUri => _req.requestedUri;
   HttpHeaders get headers => _req.headers;
-
 }
 
 class ContextResponse {
-
   HttpResponse _res;
   bool _closed = false;
 
@@ -38,7 +35,6 @@ class ContextResponse {
   }
 
   bool isClosed() => _closed;
-
 }
 
 class Context {
@@ -48,7 +44,6 @@ class Context {
   Map<String, Object> locals = {};
 
   Context(HttpRequest request) {
-
     req = new ContextRequest(request);
     res = new ContextResponse(request.response);
   }
