@@ -37,7 +37,7 @@ class Router implements Callable {
       route(HttpMethod.delete, path, callback);
 
   void route(String method, String path, Function callback) async {
-    path = _basePath + path.replaceAll(new RegExp('(^\/|\/\$)'), '');
+    path = '/' + (_basePath + path).replaceAll(new RegExp('(^\/+|\/+\$)'), '');
     path = path.replaceAll('//', '/');
 
     _routes.add(new Route(method, path, callback));

@@ -6,9 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.16] - 2018-05-24
+### Added
+- improved examples
+
+### Changed
+- Added error to Context
+
 ## [0.0.15] - 2018-05-23
 ### Added
 - improved example
 
 ### Changed
 - Formatted code according dart code styles
+
+

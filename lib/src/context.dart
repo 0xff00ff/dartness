@@ -47,4 +47,6 @@ class Context {
     req = new ContextRequest(request);
     res = new ContextResponse(request.response);
   }
+
+  Object error;
 }

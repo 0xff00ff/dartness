@@ -34,12 +34,14 @@ class Dartness {
         context.req.body = body.body;
       }
       var isError = false;
+      context.error = null;
       for (var middleware in _middlewareStack) {
         try {
           if (isError) {
             if (middleware.catchError) {
               await middleware.call(context);
               isError = false;
+              context.error = null;
             } else {
               continue;
             }
@@ -50,6 +52,7 @@ class Dartness {
           print('catched an error');
           print(e);
           isError = true;
+          context.error = e;
         }
 
         if (context.res.isClosed()) {
