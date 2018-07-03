@@ -28,6 +28,7 @@ Basic features:
 * can be used simple dynamic routes
 
 Roadmap:
+* add break if route matched
 * add regexp routes
 * add logger
 * add middleware to single route/routes list
