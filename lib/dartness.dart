@@ -27,7 +27,7 @@ class Dartness {
 
   void listen({InternetAddress host, int port = 4040}) async {
     // print('spawned dartness ...');
-    host ??= InternetAddress.ANY_IP_V4;
+    host ??= InternetAddress.anyIPv4;
 
     _http = await HttpServer.bind(host, port, shared: true);
     await for (final HttpRequest req in _http) {
