@@ -1,6 +1,6 @@
 Dartness
 
-minimalist web middleware based micro framework
+minimalist middleware based web framework 
 
 ```dart
 import 'package:dartness/dartness.dart';
@@ -26,12 +26,12 @@ Basic features:
 * all parts is middleware
 * errors can be captured on any step
 * can be used simple dynamic routes
+* router skips followed routes, if one was matched
+* middleware can be grouped into modules
 
 Roadmap:
-* add break if route matched
 * add regexp routes
 * add logger
-* add middleware to single route/routes list
 * add nester routes
 * add middleware chains
 

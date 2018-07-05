@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.17] - 2018-07-05
+### Added
+- added tests
+- added modules (middleware groups, see example) !!! module's route does not add to included routers
+
 ## [0.0.16] - 2018-05-24
 ### Added
 - improved examples

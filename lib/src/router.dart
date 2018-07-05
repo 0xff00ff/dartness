@@ -27,20 +27,25 @@ class Router implements Callable {
 
   void get(String path, Function callback) async =>
       route(HttpMethod.get, path, callback);
+
   void post(String path, Function callback) async =>
       route(HttpMethod.post, path, callback);
+
   void patch(String path, Function callback) async =>
       route(HttpMethod.patch, path, callback);
+
   void put(String path, Function callback) async =>
       route(HttpMethod.put, path, callback);
+
   void delete(String path, Function callback) async =>
       route(HttpMethod.delete, path, callback);
 
   void route(String method, String path, Function callback) async {
-    path = '/' + (_basePath + path).replaceAll(new RegExp('(^\/+|\/+\$)'), '');
-    path = path.replaceAll('//', '/');
+    final correctedPath = '/' + (_basePath + path)
+      .replaceAll(new RegExp('(^\/+|\/+\$)'), '')
+      .replaceAll('//', '/');
 
-    _routes.add(new Route(method, path, callback));
+    _routes.add(new Route(method, correctedPath, callback));
   }
 
   @override
@@ -48,7 +53,7 @@ class Router implements Callable {
     for (var routeItem in _routes) {
       if (routeItem.isMatching(context.req.method, context.req.requestedUri)) {
         context.req.params = routeItem.params;
-        return routeItem.callback(context);
+        await routeItem.callback(context);
       }
     }
   }

@@ -10,7 +10,7 @@ class Route {
   Route(this.method, this.path, this.callback);
 
   bool isMatching(String method, Uri uri) {
-    if (this.method != method) {
+    if (this.method != method && this.method != '*') {
       return false;
     }
     final pathParts = path.split('/');

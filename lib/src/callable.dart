@@ -6,7 +6,7 @@ class Callable {
   Function _callable;
   bool catchError = false;
 
-  Callable(this._callable, {this.catchError});
+  Callable(this._callable, {this.catchError = false});
 
   Future<void> call(Context context) async => _callable(context);
 }
