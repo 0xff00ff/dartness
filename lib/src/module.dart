@@ -6,7 +6,7 @@ import 'package:dartness/src/router.dart';
 import 'package:dartness/src/route.dart';
 import 'package:dartness/src/middleware.dart';
 
-class Module implements Callable{
+class Module implements Callable {
   @override
   bool catchError = false;
   Middleware middlewareChain = new Middleware();
@@ -25,13 +25,11 @@ class Module implements Callable{
 
   @override
   Future<void> call(Context context) async {
-
     final route = new Route('*', _url, (Context context) async {
       await middlewareChain.execute(context);
     });
     if (route.isMatching(context.req.method, context.req.requestedUri)) {
       await route.callback(context);
     }
-
   }
 }

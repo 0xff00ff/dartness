@@ -13,13 +13,15 @@ void main() {
   route1.route('*', '/', () async => print('111'));
   route2.route('*', '/', () async => print('222'));
 
-  Future<void> middleware1 (Context ctx) async {
+  Future<void> middleware1(Context ctx) async {
     print('api middleware1');
   }
-  Future<void> middleware2 (Context ctx) async {
+
+  Future<void> middleware2(Context ctx) async {
     print('api middleware2');
   }
-  Future<void> middleware3 (Context ctx) async {
+
+  Future<void> middleware3(Context ctx) async {
     print('main middleware before 1');
   }
 
@@ -28,7 +30,8 @@ void main() {
   module1.addMiddleware(middleware2);
   module1.addRouter(route2);
 
-  app.use(middleware3); // will be called before module and routes added to module
+  // will be called before module and routes added to module
+  app.use(middleware3); 
 
   app.use(module1);
 
@@ -37,5 +40,4 @@ void main() {
   });
 
   app.listen();
-
 }

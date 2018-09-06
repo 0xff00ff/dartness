@@ -3,50 +3,94 @@ import 'package:dartness/dartness.dart';
 import 'dart:io';
 import 'dart:convert' show utf8;
 
-void main () {
+class TestError extends Error {}
 
-print('start route test');
+void main() {
+  print('start route test');
 
-    final app = new Dartness();
-    final router = new Router();
+  final app = new Dartness();
+  final router = new Router();
 
-    app.use((Context context) async {
-      context.res.write('m1');
-    });
+  app.use((Context context) async {
+    context.res.write('m1');
+  });
 
-    router.get('/', (Context ctx) async => ctx.res.write('r1'));
-    app.use(router);
+  router.get('/', (Context ctx) async => ctx.res.write('r1'));
+  router
+      .get('/middleware', (Context ctx) async => ctx.res.write('r2'))
+      .useBefore((Context ctx) => ctx.res.write('m21'))
+      .useAfter((Context ctx) => ctx.res.write('m22'));
 
-    setUp(() {
-      app.listen(port: 4042);
-    });
+  router
+      .get('/middleware/broken', (Context ctx) async => ctx.res.write('r2'))
+      .useBefore((Context ctx) => throw new TestError())
+      .useAfter((Context ctx) => ctx.res.write('m22'), catchError: true);
 
-    test('dartness starts and route can be checked', () async {
+  router
+      .get('/middleware/newer', (Context ctx) async => ctx.res.write('r2'))
+      .useBefore((Context ctx) => throw new TestError())
+      .useAfter((Context ctx) => ctx.res.write('m22'));
 
-      final client = new HttpClient();
-      final request = await client.getUrl(Uri.parse('http://localhost:4042/'));
-      final response = await request.close();
-      final result = await response.transform(utf8.decoder).join();
+  app.use(router);
 
-      expect(result, 'm1r1');
+  app.use((Context ctx) {
+    ctx.res.write('err');
+  }, catchError: true);
 
-    });
+  setUp(() {
+    app.listen(port: 4042);
+  });
 
-    test('dartness starts and route can\'t be checked', () async {
+  test('dartness starts and route can be checked', () async {
+    final client = new HttpClient();
+    final request = await client.getUrl(Uri.parse('http://localhost:4042/'));
+    final response = await request.close();
+    final result = await response.transform(utf8.decoder).join();
 
-      final client = new HttpClient();
-      final request = await client.getUrl(Uri.parse('http://localhost:4042/fake'));
-      final response = await request.close();
-      final result = await response.transform(utf8.decoder).join();
+    expect(result, 'm1r1');
+  });
 
-      expect(result, 'm1');
+  test('dartness starts and route can\'t be checked', () async {
+    final client = new HttpClient();
+    final request =
+        await client.getUrl(Uri.parse('http://localhost:4042/fake'));
+    final response = await request.close();
+    final result = await response.transform(utf8.decoder).join();
 
-    });
+    expect(result, 'm1');
+  });
 
-    tearDown(() async {
-      await app.close(force: true);
-    });
+  test('dartness starts and route use middleware', () async {
+    final client = new HttpClient();
+    final request =
+        await client.getUrl(Uri.parse('http://localhost:4042/middleware'));
+    final response = await request.close();
+    final result = await response.transform(utf8.decoder).join();
 
+    expect(result, 'm1m21r2m22');
+  });
 
+  test('dartness starts and middleware breaking route', () async {
+    final client = new HttpClient();
+    final request = await client
+        .getUrl(Uri.parse('http://localhost:4042/middleware/broken'));
+    final response = await request.close();
+    final result = await response.transform(utf8.decoder).join();
 
+    expect(result, 'm1m22');
+  });
+
+  test('dartness starts and route can\'t be checked', () async {
+    final client = new HttpClient();
+    final request = await client
+        .getUrl(Uri.parse('http://localhost:4042/middleware/newer'));
+    final response = await request.close();
+    final result = await response.transform(utf8.decoder).join();
+
+    expect(result, 'm1');
+  });
+
+  tearDown(() async {
+    await app.close(force: true);
+  });
 }

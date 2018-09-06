@@ -12,5 +12,4 @@ void main() {
   app.use(router);
 
   app.listen();
-
 }

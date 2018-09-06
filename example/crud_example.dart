@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dartness/dartness.dart';
 
 class CrudService {
@@ -29,7 +27,6 @@ class CrudService {
     }
     return false;
   }
-
 }
 
 void main() {
@@ -39,33 +36,31 @@ void main() {
 
   final service = new CrudService();
 
-  router.get('/', (Context ctx){
+  router.get('/', (Context ctx) {
     print('GET /');
     ctx.locals['data'] = service.getAll();
   });
 
-  router.get('/name', (Context ctx){
+  router.get('/name', (Context ctx) {
     print('GET /name!!');
     //ctx.locals['data'] = service.getOne(0);
   });
 
-  router.get('/:id', (Context ctx){
+  router.get('/:id', (Context ctx) {
     final id = ctx.req.params['id'];
     print('GET /' + id);
     ctx.locals['data'] = service.getOne(id);
   });
 
-
-
-  router.delete('/:id', (Context ctx){
+  router.delete('/:id', (Context ctx) {
     final id = ctx.req.params['id'];
     print('DELETE /' + id);
     ctx.locals['data'] = service.delete(id);
   });
-  router.post('/', (Context ctx){
+  router.post('/', (Context ctx) {
     print('POST /');
-    if(ctx.req.body.containsKey('data')) {
-      String id = service.insert(ctx.req.body['data']);
+    if (ctx.req.body.containsKey('data')) {
+      final id = service.insert(ctx.req.body['data']);
       ctx.locals['data'] = id;
     } else {
       throw new Error();
@@ -80,8 +75,8 @@ void main() {
   });
   */
 
-  app.use((Context ctx){
-    ctx.res.write("oops, an error occured.");
+  app.use((Context ctx) {
+    ctx.res.write('oops, an error occured.');
   }, catchError: true);
 
   app.listen();

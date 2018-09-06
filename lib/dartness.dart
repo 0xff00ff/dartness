@@ -13,9 +13,7 @@ export 'package:dartness/src/callable.dart';
 export 'package:dartness/src/router.dart';
 export 'package:dartness/src/module.dart';
 
-
 class Dartness {
-
   Middleware middlewareChain = new Middleware();
 
   HttpServer _http;
@@ -50,12 +48,7 @@ class Dartness {
     }
   }
 
-  Future<dynamic> close ({bool force = false}) async {
-    //print('closing http');
-    final dynamic result = await  _http.close(force: force);
-    //print(result);
-    return result;
-  }
+  Future close({bool force = false}) async => _http.close(force: force);
 }
 
 Future<void> staticFileHandler(String path) async {

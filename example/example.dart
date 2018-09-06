@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dartness/dartness.dart';
 
 void main() {
-
   final app = new Dartness();
 
   app.use((Context context) async {
@@ -17,11 +16,19 @@ void main() {
   final router = new Router();
 
   router.get('/:param1/:param2/:param3', (Context context) async {
-    print ('GET /' + context.req.params.toString()); // map {param1: 'value1', param2: value2, param3: value3}
+    // context.req.params = map {param1: 'value1', param2: value2, param3: value3}
+    print('GET /' + context.req.params.toString()); 
   });
 
   router.get('/', (Context context) async => null);
   router.post('/', (Context context) async => print(context.req.body)); // body is a map
+  router
+      .get('/secret', (Context context) async => context.res.write('secret word'))
+      .useBefore((Context context) {
+    if (context.req.headers.value('X-Secret-Code').isEmpty) {
+      throw new StateError('You shall not pass!');
+    }
+  });
 
   app.use(router);
 
@@ -39,6 +46,4 @@ void main() {
   }, catchError: true);
 
   app.listen(host: InternetAddress.anyIPv4, port: 4040);
-
 }
-

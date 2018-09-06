@@ -17,35 +17,35 @@ class Router implements Callable {
   final List<Route> _routes = [];
   @override
   bool catchError = false;
-
-  //TODO: add ability to use this
   String _basePath = '';
 
   Router({String basePath: ''}) {
     _basePath = basePath;
   }
 
-  void get(String path, Function callback) async =>
+  Route get(String path, Function callback) =>
       route(HttpMethod.get, path, callback);
 
-  void post(String path, Function callback) async =>
+  Route post(String path, Function callback) =>
       route(HttpMethod.post, path, callback);
 
-  void patch(String path, Function callback) async =>
+  Route patch(String path, Function callback) =>
       route(HttpMethod.patch, path, callback);
 
-  void put(String path, Function callback) async =>
+  Route put(String path, Function callback) =>
       route(HttpMethod.put, path, callback);
 
-  void delete(String path, Function callback) async =>
+  Route delete(String path, Function callback) =>
       route(HttpMethod.delete, path, callback);
 
-  void route(String method, String path, Function callback) async {
-    final correctedPath = '/' + (_basePath + path)
-      .replaceAll(new RegExp('(^\/+|\/+\$)'), '')
-      .replaceAll('//', '/');
-
-    _routes.add(new Route(method, correctedPath, callback));
+  Route route(String method, String path, Function callback) {
+    final correctedPath = '/' +
+        (_basePath + path)
+            .replaceAll(new RegExp('(^\/+|\/+\$)'), '')
+            .replaceAll('//', '/');
+    final route = new Route(method, correctedPath, callback);
+    _routes.add(route);
+    return route;
   }
 
   @override
@@ -53,7 +53,7 @@ class Router implements Callable {
     for (var routeItem in _routes) {
       if (routeItem.isMatching(context.req.method, context.req.requestedUri)) {
         context.req.params = routeItem.params;
-        await routeItem.callback(context);
+        await routeItem(context);
       }
     }
   }
