@@ -17,17 +17,23 @@ void main() {
 
   router.get('/:param1/:param2/:param3', (Context context) async {
     // context.req.params = map {param1: 'value1', param2: value2, param3: value3}
-    print('GET /' + context.req.params.toString()); 
+    print('GET /' + context.req.params.toString());
   });
 
   router.get('/', (Context context) async => null);
-  router.post('/', (Context context) async => print(context.req.body)); // body is a map
+  router.post(
+      '/', (Context context) async => print(context.req.body)); // body is a map
   router
-      .get('/secret', (Context context) async => context.res.write('secret word'))
+      .get('/secret',
+          (Context context) async => context.res.write('secret word'))
       .useBefore((Context context) {
     if (context.req.headers.value('X-Secret-Code').isEmpty) {
       throw new StateError('You shall not pass!');
     }
+  });
+  router.get(r'/:blogId(\d+$)', (Context context) {
+    // will match on route: /some-blog-title-1234/
+    context.req.params['blogId']; // 1234
   });
 
   app.use(router);

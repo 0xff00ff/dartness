@@ -2,12 +2,12 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:body_parser/body_parser.dart';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:dartness/src/context.dart';
 import 'package:dartness/src/callable.dart';
 import 'package:dartness/src/router.dart';
 import 'package:dartness/src/middleware.dart';
-
 export 'package:dartness/src/context.dart';
 export 'package:dartness/src/callable.dart';
 export 'package:dartness/src/router.dart';
@@ -34,7 +34,10 @@ class Dartness {
       if (req.method == HttpMethod.post ||
           req.method == HttpMethod.put ||
           req.method == HttpMethod.patch) {
-        final body = await parseBody(req);
+        final contentType = req.headers.contentType != null
+            ? new MediaType.parse(req.headers.contentType.toString())
+            : null;
+        final body = await parseBodyFromStream(req, contentType, req.uri);
         context.req.body = body.body;
       }
 

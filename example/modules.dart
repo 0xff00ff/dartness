@@ -31,7 +31,7 @@ void main() {
   module1.addRouter(route2);
 
   // will be called before module and routes added to module
-  app.use(middleware3); 
+  app.use(middleware3);
 
   app.use(module1);
 

@@ -23,27 +23,29 @@ class Router implements Callable {
     _basePath = basePath;
   }
 
-  Route get(String path, Function callback) =>
-      route(HttpMethod.get, path, callback);
+  Route get(String path, Function callback, {bool useRegexp = false}) =>
+      route(HttpMethod.get, path, callback, useRegexp: useRegexp);
 
-  Route post(String path, Function callback) =>
-      route(HttpMethod.post, path, callback);
+  Route post(String path, Function callback, {bool useRegexp = false}) =>
+      route(HttpMethod.post, path, callback, useRegexp: useRegexp);
 
-  Route patch(String path, Function callback) =>
-      route(HttpMethod.patch, path, callback);
+  Route patch(String path, Function callback, {bool useRegexp = false}) =>
+      route(HttpMethod.patch, path, callback, useRegexp: useRegexp);
 
-  Route put(String path, Function callback) =>
-      route(HttpMethod.put, path, callback);
+  Route put(String path, Function callback, {bool useRegexp = false}) =>
+      route(HttpMethod.put, path, callback, useRegexp: useRegexp);
 
-  Route delete(String path, Function callback) =>
-      route(HttpMethod.delete, path, callback);
+  Route delete(String path, Function callback, {bool useRegexp = false}) =>
+      route(HttpMethod.delete, path, callback, useRegexp: useRegexp);
 
-  Route route(String method, String path, Function callback) {
+  Route route(String method, String path, Function callback,
+      {bool useRegexp = false}) {
     final correctedPath = '/' +
         (_basePath + path)
             .replaceAll(new RegExp('(^\/+|\/+\$)'), '')
             .replaceAll('//', '/');
-    final route = new Route(method, correctedPath, callback);
+    final route =
+        new Route(method, correctedPath, callback, useRegexp: useRegexp);
     _routes.add(route);
     return route;
   }

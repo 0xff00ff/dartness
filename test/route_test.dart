@@ -31,6 +31,32 @@ void main() {
       .useBefore((Context ctx) => throw new TestError())
       .useAfter((Context ctx) => ctx.res.write('m22'));
 
+  router.get('/:q/:w/:e', (Context ctx) {
+    if (!ctx.req.params.containsKey('q')) {
+      throw new TestError();
+    }
+    if (!ctx.req.params.containsKey('w')) {
+      throw new TestError();
+    }
+    if (!ctx.req.params.containsKey('e')) {
+      throw new TestError();
+    }
+    return ctx.req.params['q'] + ctx.req.params['w'] + ctx.req.params['e'];
+  });
+
+  router.get('/:qwe:(\\w)/:qwe(\\w)', (Context ctx) {
+    if (!ctx.req.params.containsKey('q')) {
+      throw new TestError();
+    }
+    if (!ctx.req.params.containsKey('w')) {
+      throw new TestError();
+    }
+    if (!ctx.req.params.containsKey('e')) {
+      throw new TestError();
+    }
+    return ctx.req.params['q'] + ctx.req.params['w'] + ctx.req.params['e'];
+  }, useRegexp: true);
+
   app.use(router);
 
   app.use((Context ctx) {
