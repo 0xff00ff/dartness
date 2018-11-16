@@ -1,10 +1,11 @@
 name: "dartness"
-version: "0.1.0"
+version: "0.2.0"
 author: "0xff00ff <0xff00ff@gmail.com>"
-description: "micro framework for dart based on middleware. Made for rest api."
+description: "middleware based micro framework for dart. Made for rest api."
 homepage: "https://github.com/0xff00ff/dartness"
 dependencies:
   body_parser: "^1.1.0"
+  http_parser: "^3.0.0"
 dev_dependencies:
   test: "^1.0.0"
 environment:

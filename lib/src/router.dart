@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:mirrors';
 
 import 'package:dartness/src/callable.dart';
 import 'package:dartness/src/context.dart';
@@ -40,13 +41,28 @@ class Router implements Callable {
 
   Route route(String method, String path, Function callback,
       {bool useRegexp = false}) {
+
+    // check caller with mirrors
+    final ClosureMirror _caller = reflect(callback);
+
+    final parameters = _caller.function.parameters;
+    parameters.forEach((ParameterMirror p){
+      final type = MirrorSystem.getName(p.type.simpleName);
+      if (type != 'String' && type != 'Context') {
+        throw new ArgumentError("'$type' unsupported type in route arguments ($method $path)");
+      }
+    });
+
+
     final correctedPath = '/' +
         (_basePath + path)
             .replaceAll(new RegExp('(^\/+|\/+\$)'), '')
             .replaceAll('//', '/');
+
     final route =
         new Route(method, correctedPath, callback, useRegexp: useRegexp);
     _routes.add(route);
+
     return route;
   }
 
@@ -60,3 +76,7 @@ class Router implements Callable {
     }
   }
 }
+
+
+
+

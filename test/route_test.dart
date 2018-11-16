@@ -33,28 +33,30 @@ void main() {
 
   router.get('/:q/:w/:e', (Context ctx) {
     if (!ctx.req.params.containsKey('q')) {
+      print('q');
       throw new TestError();
     }
     if (!ctx.req.params.containsKey('w')) {
+      print('w');
       throw new TestError();
     }
     if (!ctx.req.params.containsKey('e')) {
+      print('e');
       throw new TestError();
     }
     return ctx.req.params['q'] + ctx.req.params['w'] + ctx.req.params['e'];
   });
 
-  router.get('/:qwe:(\\w)/:qwe(\\w)', (Context ctx) {
-    if (!ctx.req.params.containsKey('q')) {
+  router.get('/:qwe:(\\w)/:asd(\\w)', (Context ctx) {
+    if (!ctx.req.params.containsKey('qwe')) {
+      print('qwe');
       throw new TestError();
     }
-    if (!ctx.req.params.containsKey('w')) {
+    if (!ctx.req.params.containsKey('asd')) {
+      print('asd');
       throw new TestError();
     }
-    if (!ctx.req.params.containsKey('e')) {
-      throw new TestError();
-    }
-    return ctx.req.params['q'] + ctx.req.params['w'] + ctx.req.params['e'];
+    return ctx.req.params['qwe'] + ctx.req.params['asd'];
   }, useRegexp: true);
 
   app.use(router);
@@ -67,7 +69,7 @@ void main() {
     app.listen(port: 4042);
   });
 
-  test('dartness starts and route can be checked', () async {
+  test('route can be checked', () async {
     final client = new HttpClient();
     final request = await client.getUrl(Uri.parse('http://localhost:4042/'));
     final response = await request.close();
@@ -76,7 +78,7 @@ void main() {
     expect(result, 'm1r1');
   });
 
-  test('dartness starts and route can\'t be checked', () async {
+  test('route can\'t be checked', () async {
     final client = new HttpClient();
     final request =
         await client.getUrl(Uri.parse('http://localhost:4042/fake'));
@@ -86,7 +88,7 @@ void main() {
     expect(result, 'm1');
   });
 
-  test('dartness starts and route use middleware', () async {
+  test('route use middleware', () async {
     final client = new HttpClient();
     final request =
         await client.getUrl(Uri.parse('http://localhost:4042/middleware'));
@@ -96,7 +98,7 @@ void main() {
     expect(result, 'm1m21r2m22');
   });
 
-  test('dartness starts and middleware breaking route', () async {
+  test('middleware breaking route', () async {
     final client = new HttpClient();
     final request = await client
         .getUrl(Uri.parse('http://localhost:4042/middleware/broken'));
@@ -106,7 +108,7 @@ void main() {
     expect(result, 'm1m22');
   });
 
-  test('dartness starts and route can\'t be checked', () async {
+  test('route with middleware can\'t be checked', () async {
     final client = new HttpClient();
     final request = await client
         .getUrl(Uri.parse('http://localhost:4042/middleware/newer'));

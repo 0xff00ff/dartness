@@ -8,10 +8,13 @@ import 'package:dartness/src/context.dart';
 import 'package:dartness/src/callable.dart';
 import 'package:dartness/src/router.dart';
 import 'package:dartness/src/middleware.dart';
+
 export 'package:dartness/src/context.dart';
 export 'package:dartness/src/callable.dart';
 export 'package:dartness/src/router.dart';
 export 'package:dartness/src/module.dart';
+
+export 'package:dartness/src/middlewares/cors.dart';
 
 class Dartness {
   Middleware middlewareChain = new Middleware();
