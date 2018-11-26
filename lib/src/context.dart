@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:mapper/mapper.dart';
 
 class ContextRequest {
   HttpRequest _req;
@@ -12,18 +13,41 @@ class ContextRequest {
   String get method => _req.method;
   Uri get requestedUri => _req.requestedUri;
   HttpHeaders get headers => _req.headers;
+
+  T getPostAs<T>() {
+    return decode<T>(body);
+  }
 }
 
 class ContextResponse {
   HttpResponse _res;
   bool _closed = false;
+  bool _statusCodeChanged = false;
 
-  ContextResponse(this._res);
+  ContextResponse(HttpResponse res) {
+    _res = res;
+    _res.statusCode = 404;
+  }
 
   HttpResponse get response => _res;
   HttpHeaders get headers => _res.headers;
 
-  void write(Object obj) => _res.write(obj);
+  int get statusCode {
+    return _res.statusCode;
+  }
+
+  set statusCode (int code) {
+    _res.statusCode = code;
+    _statusCodeChanged = true;
+  }
+
+  void write(Object obj) {
+    if (!_statusCodeChanged) {
+      _res.statusCode = 200;
+      _statusCodeChanged = true;
+    }
+    _res.write(obj);
+  }
 
   Future<dynamic> close() {
     if (!_closed) {

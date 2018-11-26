@@ -5,7 +5,7 @@ import 'package:dartness/src/routeMatcher.dart';
 
 import 'dart:async';
 
-class Route {
+class RouteItem {
   String path = '';
   String method = 'GET';
   Function callback;
@@ -14,7 +14,7 @@ class Route {
   bool useRegexp = false;
   Map<String, String> params = {};
 
-  Route(this.method, this.path, this.callback, {this.useRegexp = false});
+  RouteItem(this.method, this.path, this.callback, {this.useRegexp = false});
 
   bool isMatching(String method, Uri uri) {
     if (this.method != method && this.method != '*') {
@@ -34,12 +34,12 @@ class Route {
     return stack.execute(context);
   }
 
-  Route useBefore(Function middleware, {bool catchError = false}) {
+  RouteItem useBefore(Function middleware, {bool catchError = false}) {
     _before.add(new Callable(middleware, catchError: catchError));
     return this;
   }
 
-  Route useAfter(Function middleware, {bool catchError = false}) {
+  RouteItem useAfter(Function middleware, {bool catchError = false}) {
     _after.add(new Callable(middleware, catchError: catchError));
     return this;
   }

@@ -18,5 +18,5 @@ void main() {
     ctx.res.write('oops, error!');
   }, catchError: true);
 
-  app.listen();
+  app.listen(port: 3030);
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dartness/src/callable.dart';
 import 'package:dartness/src/context.dart';
 import 'package:dartness/src/router.dart';
-import 'package:dartness/src/route.dart';
+import 'package:dartness/src/routeItem.dart';
 import 'package:dartness/src/middleware.dart';
 
 class Module implements Callable {
@@ -25,7 +25,7 @@ class Module implements Callable {
 
   @override
   Future<void> call(Context context) async {
-    final route = new Route('*', _url, (Context context) async {
+    final route = new RouteItem('*', _url, (Context context) async {
       await middlewareChain.execute(context);
     });
     if (route.isMatching(context.req.method, context.req.requestedUri)) {

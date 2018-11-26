@@ -8,11 +8,14 @@ import 'package:dartness/src/context.dart';
 import 'package:dartness/src/callable.dart';
 import 'package:dartness/src/router.dart';
 import 'package:dartness/src/middleware.dart';
+import 'package:dartness/src/httpMethod.dart';
 
 export 'package:dartness/src/context.dart';
 export 'package:dartness/src/callable.dart';
 export 'package:dartness/src/router.dart';
 export 'package:dartness/src/module.dart';
+export 'package:dartness/src/meta.dart';
+export 'package:dartness/src/httpMethod.dart';
 
 export 'package:dartness/src/middlewares/cors.dart';
 
@@ -44,7 +47,13 @@ class Dartness {
         context.req.body = body.body;
       }
 
-      await middlewareChain.execute(context);
+      try {
+        await middlewareChain.execute(context);
+      } catch (e) {
+        // log?
+        context.res.statusCode = 500;
+        context.res.write("Internal server error");
+      }
 
       if (!context.res.isClosed()) {
         context.res.close();

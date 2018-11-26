@@ -3,19 +3,12 @@ import 'dart:mirrors';
 
 import 'package:dartness/src/callable.dart';
 import 'package:dartness/src/context.dart';
-import 'package:dartness/src/route.dart';
-
-class HttpMethod {
-  static String get = 'GET';
-  static String post = 'POST';
-  static String patch = 'PATCH';
-  static String put = 'PUT';
-  static String delete = 'DELETE';
-  static String options = 'OPTIONS';
-}
+import 'package:dartness/src/routeItem.dart';
+import 'package:dartness/src/httpMethod.dart';
+import 'package:dartness/src/meta.dart';
 
 class Router implements Callable {
-  final List<Route> _routes = [];
+  final List<RouteItem> _routes = [];
   @override
   bool catchError = false;
   String _basePath = '';
@@ -24,22 +17,22 @@ class Router implements Callable {
     _basePath = basePath;
   }
 
-  Route get(String path, Function callback, {bool useRegexp = false}) =>
+  RouteItem get(String path, Function callback, {bool useRegexp = false}) =>
       route(HttpMethod.get, path, callback, useRegexp: useRegexp);
 
-  Route post(String path, Function callback, {bool useRegexp = false}) =>
+  RouteItem post(String path, Function callback, {bool useRegexp = false}) =>
       route(HttpMethod.post, path, callback, useRegexp: useRegexp);
 
-  Route patch(String path, Function callback, {bool useRegexp = false}) =>
+  RouteItem patch(String path, Function callback, {bool useRegexp = false}) =>
       route(HttpMethod.patch, path, callback, useRegexp: useRegexp);
 
-  Route put(String path, Function callback, {bool useRegexp = false}) =>
+  RouteItem put(String path, Function callback, {bool useRegexp = false}) =>
       route(HttpMethod.put, path, callback, useRegexp: useRegexp);
 
-  Route delete(String path, Function callback, {bool useRegexp = false}) =>
+  RouteItem delete(String path, Function callback, {bool useRegexp = false}) =>
       route(HttpMethod.delete, path, callback, useRegexp: useRegexp);
 
-  Route route(String method, String path, Function callback,
+  RouteItem route(String method, String path, Function callback,
       {bool useRegexp = false}) {
 
     // check caller with mirrors
@@ -60,7 +53,7 @@ class Router implements Callable {
             .replaceAll('//', '/');
 
     final route =
-        new Route(method, correctedPath, callback, useRegexp: useRegexp);
+        new RouteItem(method, correctedPath, callback, useRegexp: useRegexp);
     _routes.add(route);
 
     return route;
@@ -74,6 +67,20 @@ class Router implements Callable {
         await routeItem(context);
       }
     }
+  }
+
+  void bind(Object obj) {
+    final instance = reflect(obj);
+    instance.type.instanceMembers.forEach((Symbol name, MethodMirror method) {
+      method.metadata.forEach((InstanceMirror metaItem){
+        if (metaItem.reflectee is Route) {
+          Route inst = metaItem.reflectee;
+          route(inst.method, inst.path, (Context ctx) {
+            instance.invoke(name, <Context>[ctx]);
+          });
+        }
+      });
+    });
   }
 }
 

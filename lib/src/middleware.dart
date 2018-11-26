@@ -34,15 +34,19 @@ class Middleware {
           await middleware.call(context);
         }
       } catch (e) {
+        isError = true;
         print('catched an error');
         print(e);
-        isError = true;
         context.error = e;
       }
 
       if (context.res.isClosed()) {
         break;
       }
+    }
+
+    if (isError) {
+      throw context.error;
     }
   }
 }
