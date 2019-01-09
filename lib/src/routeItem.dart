@@ -8,7 +8,7 @@ import 'dart:async';
 class RouteItem {
   String path = '';
   String method = 'GET';
-  Function callback;
+  Callable callback;
   final List<Callable> _before = [];
   final List<Callable> _after = [];
   bool useRegexp = false;
@@ -29,18 +29,18 @@ class RouteItem {
   Future<void> call(Context context) async {
     final stack = new Middleware();
     stack.addAll(_before);
-    stack.add(new Callable(callback));
+    stack.add(callback);
     stack.addAll(_after);
     return stack.execute(context);
   }
 
   RouteItem useBefore(Function middleware, {bool catchError = false}) {
-    _before.add(new Callable(middleware, catchError: catchError));
+    _before.add(new Callable.function(middleware, catchError: catchError));
     return this;
   }
 
   RouteItem useAfter(Function middleware, {bool catchError = false}) {
-    _after.add(new Callable(middleware, catchError: catchError));
+    _after.add(new Callable.function(middleware, catchError: catchError));
     return this;
   }
 }

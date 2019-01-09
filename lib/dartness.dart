@@ -25,17 +25,15 @@ class Dartness {
   HttpServer _http;
 
   void use(Function middleware, {bool catchError: false}) {
-    final callable = new Callable(middleware, catchError: catchError);
+    final callable = new Callable.function(middleware, catchError: catchError);
     middlewareChain.add(callable);
   }
 
   void listen({InternetAddress host, int port = 4040}) async {
-    // print('spawned dartness ...');
     host ??= InternetAddress.anyIPv4;
 
     _http = await HttpServer.bind(host, port, shared: true);
     await for (final HttpRequest req in _http) {
-      // final start = new DateTime.now();
       final context = new Context(req);
       if (req.method == HttpMethod.post ||
           req.method == HttpMethod.put ||
@@ -50,16 +48,13 @@ class Dartness {
       try {
         await middlewareChain.execute(context);
       } catch (e) {
-        // log?
         context.res.statusCode = 500;
-        context.res.write("Internal server error");
+        context.res.write('Internal server error');
       }
 
       if (!context.res.isClosed()) {
         context.res.close();
       }
-      // final finish = new DateTime.now().difference(start);
-      // print('[dartness] request time: ' + finish.inMilliseconds.toString());
     }
   }
 

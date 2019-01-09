@@ -14,9 +14,7 @@ class ContextRequest {
   Uri get requestedUri => _req.requestedUri;
   HttpHeaders get headers => _req.headers;
 
-  T getPostAs<T>() {
-    return decode<T>(body);
-  }
+  T getPostAs<T>() => decode<T>(body);
 }
 
 class ContextResponse {
@@ -32,9 +30,7 @@ class ContextResponse {
   HttpResponse get response => _res;
   HttpHeaders get headers => _res.headers;
 
-  int get statusCode {
-    return _res.statusCode;
-  }
+  int get statusCode => _res.statusCode;
 
   set statusCode (int code) {
     _res.statusCode = code;

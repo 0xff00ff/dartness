@@ -12,40 +12,33 @@ class Router implements Callable {
   @override
   bool catchError = false;
   String _basePath = '';
+  @override
+  List<Argument> arguments = <Argument>[];
 
   Router({String basePath: ''}) {
     _basePath = basePath;
   }
 
   RouteItem get(String path, Function callback, {bool useRegexp = false}) =>
-      route(HttpMethod.get, path, callback, useRegexp: useRegexp);
+    _route(HttpMethod.get, path, Callable.function(callback), useRegexp: useRegexp);
 
   RouteItem post(String path, Function callback, {bool useRegexp = false}) =>
-      route(HttpMethod.post, path, callback, useRegexp: useRegexp);
+    _route(HttpMethod.post, path, Callable.function(callback), useRegexp: useRegexp);
 
   RouteItem patch(String path, Function callback, {bool useRegexp = false}) =>
-      route(HttpMethod.patch, path, callback, useRegexp: useRegexp);
+    _route(HttpMethod.patch, path, Callable.function(callback), useRegexp: useRegexp);
 
   RouteItem put(String path, Function callback, {bool useRegexp = false}) =>
-      route(HttpMethod.put, path, callback, useRegexp: useRegexp);
+    _route(HttpMethod.put, path, Callable.function(callback), useRegexp: useRegexp);
 
   RouteItem delete(String path, Function callback, {bool useRegexp = false}) =>
-      route(HttpMethod.delete, path, callback, useRegexp: useRegexp);
+    _route(HttpMethod.delete, path, Callable.function(callback), useRegexp: useRegexp);
 
-  RouteItem route(String method, String path, Function callback,
+  RouteItem route(String method, String path, Function callback, {bool useRegexp = false}) =>
+    _route(method, path, Callable.function(callback), useRegexp: useRegexp);
+
+  RouteItem _route(String method, String path, Callable callback,
       {bool useRegexp = false}) {
-
-    // check caller with mirrors
-    final ClosureMirror _caller = reflect(callback);
-
-    final parameters = _caller.function.parameters;
-    parameters.forEach((ParameterMirror p){
-      final type = MirrorSystem.getName(p.type.simpleName);
-      if (type != 'String' && type != 'Context') {
-        throw new ArgumentError("'$type' unsupported type in route arguments ($method $path)");
-      }
-    });
-
 
     final correctedPath = '/' +
         (_basePath + path)
@@ -72,12 +65,10 @@ class Router implements Callable {
   void bind(Object obj) {
     final instance = reflect(obj);
     instance.type.instanceMembers.forEach((Symbol name, MethodMirror method) {
-      method.metadata.forEach((InstanceMirror metaItem){
+      method.metadata.forEach((InstanceMirror metaItem) {
         if (metaItem.reflectee is Route) {
-          Route inst = metaItem.reflectee;
-          route(inst.method, inst.path, (Context ctx) {
-            instance.invoke(name, <Context>[ctx]);
-          });
+          final Route inst = metaItem.reflectee;
+          route(inst.method, inst.path, Callable.method(instance, name));
         }
       });
     });

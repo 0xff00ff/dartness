@@ -1,0 +1,6 @@
+name: "{{projectName}}"
+version: 0.0.1
+description: ""
+dependencies:
+  dartness: ">=0.0.1 <1.0.0"
+  dbcrypt: ">=1.0.0"

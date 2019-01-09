@@ -114,8 +114,7 @@ void main() {
         .getUrl(Uri.parse('http://localhost:4042/middleware/newer'));
     final response = await request.close();
     final result = await response.transform(utf8.decoder).join();
-
-    expect(result, 'm1');
+    expect(result, 'm1err');
   });
 
   tearDown(() async {

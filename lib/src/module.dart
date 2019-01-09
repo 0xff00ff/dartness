@@ -10,13 +10,14 @@ class Module implements Callable {
   @override
   bool catchError = false;
   Middleware middlewareChain = new Middleware();
-
   String _url;
+  @override
+  List<Argument> arguments = <Argument>[];
 
   Module(this._url);
 
   void addMiddleware(Function middleware) {
-    middlewareChain.add(new Callable(middleware));
+    middlewareChain.add(new Callable.function(middleware));
   }
 
   void addRouter(Router router) {
@@ -25,9 +26,10 @@ class Module implements Callable {
 
   @override
   Future<void> call(Context context) async {
-    final route = new RouteItem('*', _url, (Context context) async {
+    final callable = new Callable.function((Context context) async {
       await middlewareChain.execute(context);
     });
+    final route = new RouteItem('*', _url, callable);
     if (route.isMatching(context.req.method, context.req.requestedUri)) {
       await route.callback(context);
     }

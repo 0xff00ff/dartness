@@ -1,9 +1,14 @@
 import 'package:dartness/dartness.dart';
 
 class A {
-  @Get('/a_get')
-  void get(Context ctx) {
-    ctx.res.write('a_get');
+  @Get('/')
+  void index(Context c) {
+    c.res.write('index');
+  }
+
+  @Get('/:param')
+  void param(Context c, String param) {
+    c.res.write(param);
   }
 }
 
