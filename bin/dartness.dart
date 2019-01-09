@@ -2,7 +2,6 @@ import 'package:cli_util/cli_logging.dart';
 import 'package:dartness/src/cli/command.dart';
 
 void main(List<String> args) {
-
   final logger = new Logger.standard();
   final ansi = new Ansi(true);
 

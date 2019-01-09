@@ -20,26 +20,31 @@ class Router implements Callable {
   }
 
   RouteItem get(String path, Function callback, {bool useRegexp = false}) =>
-    _route(HttpMethod.get, path, Callable.function(callback), useRegexp: useRegexp);
+      _route(HttpMethod.get, path, Callable.function(callback),
+          useRegexp: useRegexp);
 
   RouteItem post(String path, Function callback, {bool useRegexp = false}) =>
-    _route(HttpMethod.post, path, Callable.function(callback), useRegexp: useRegexp);
+      _route(HttpMethod.post, path, Callable.function(callback),
+          useRegexp: useRegexp);
 
   RouteItem patch(String path, Function callback, {bool useRegexp = false}) =>
-    _route(HttpMethod.patch, path, Callable.function(callback), useRegexp: useRegexp);
+      _route(HttpMethod.patch, path, Callable.function(callback),
+          useRegexp: useRegexp);
 
   RouteItem put(String path, Function callback, {bool useRegexp = false}) =>
-    _route(HttpMethod.put, path, Callable.function(callback), useRegexp: useRegexp);
+      _route(HttpMethod.put, path, Callable.function(callback),
+          useRegexp: useRegexp);
 
   RouteItem delete(String path, Function callback, {bool useRegexp = false}) =>
-    _route(HttpMethod.delete, path, Callable.function(callback), useRegexp: useRegexp);
+      _route(HttpMethod.delete, path, Callable.function(callback),
+          useRegexp: useRegexp);
 
-  RouteItem route(String method, String path, Function callback, {bool useRegexp = false}) =>
-    _route(method, path, Callable.function(callback), useRegexp: useRegexp);
+  RouteItem route(String method, String path, Function callback,
+          {bool useRegexp = false}) =>
+      _route(method, path, Callable.function(callback), useRegexp: useRegexp);
 
   RouteItem _route(String method, String path, Callable callback,
       {bool useRegexp = false}) {
-
     final correctedPath = '/' +
         (_basePath + path)
             .replaceAll(new RegExp('(^\/+|\/+\$)'), '')
@@ -74,7 +79,3 @@ class Router implements Callable {
     });
   }
 }
-
-
-
-

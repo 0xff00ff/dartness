@@ -18,6 +18,7 @@ export 'package:dartness/src/meta.dart';
 export 'package:dartness/src/httpMethod.dart';
 
 export 'package:dartness/src/middlewares/cors.dart';
+export 'package:dartness/src/middlewares/static.dart';
 
 class Dartness {
   Middleware middlewareChain = new Middleware();

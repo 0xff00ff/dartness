@@ -32,7 +32,7 @@ class ContextResponse {
 
   int get statusCode => _res.statusCode;
 
-  set statusCode (int code) {
+  set statusCode(int code) {
     _res.statusCode = code;
     _statusCodeChanged = true;
   }

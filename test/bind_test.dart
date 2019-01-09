@@ -25,7 +25,6 @@ void main() {
 
   setUp(() {
     app.listen(port: 4041);
-    
   });
 
   test('index method executed', () async {
@@ -33,16 +32,17 @@ void main() {
     final request = await client.getUrl(Uri.parse('http://localhost:4041'));
     final response = await request.close();
     final result = await response.transform(utf8.decoder).join();
-print(result);
+    print(result);
     expect(result, 'index');
   });
 
   test('param method executed', () async {
     final client = new HttpClient();
-    final request = await client.getUrl(Uri.parse('http://localhost:4041/param3'));
+    final request =
+        await client.getUrl(Uri.parse('http://localhost:4041/param3'));
     final response = await request.close();
     final result = await response.transform(utf8.decoder).join();
-print(result);
+    print(result);
     expect(result, 'param3');
   });
 

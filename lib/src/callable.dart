@@ -30,7 +30,7 @@ class Callable {
     _type = Types.function;
     _callable = reflect(callable);
     final ClosureMirror caller = _callable;
-    caller.function.parameters.forEach((ParameterMirror p){
+    caller.function.parameters.forEach((ParameterMirror p) {
       final name = MirrorSystem.getName(p.simpleName);
       final type = MirrorSystem.getName(p.type.simpleName);
       arguments.add(new Argument(name, p.simpleName, type, p.type.simpleName));
@@ -39,7 +39,7 @@ class Callable {
 
   Callable.method(Mirror object, Symbol method, {this.catchError = false}) {
     _type = Types.method;
-    _callable= object;
+    _callable = object;
     _method = method;
     final InstanceMirror obj = _callable;
     obj.type.instanceMembers.forEach((key, value) {
@@ -47,13 +47,14 @@ class Callable {
         value.parameters.forEach((p) {
           final name = MirrorSystem.getName(p.simpleName);
           final type = MirrorSystem.getName(p.type.simpleName);
-          arguments.add(new Argument(name, p.simpleName, type, p.type.simpleName));
+          arguments
+              .add(new Argument(name, p.simpleName, type, p.type.simpleName));
         });
       }
     });
   }
 
-  Future<void> call(Context context) async { 
+  Future<void> call(Context context) async {
     if (_type == Types.function) {
       return _callFunction(context);
     }
@@ -67,8 +68,8 @@ class Callable {
     final args = <dynamic>[];
     arguments.forEach((arg) {
       if (arg.type == 'Context') {
-          args.add(context);
-        }
+        args.add(context);
+      }
       if (context.req.params.keys.contains(arg.name)) {
         args.add(context.req.params[arg.name]);
       }

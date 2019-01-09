@@ -15,7 +15,8 @@ void main() {
 
   final router = new Router();
 
-  router.get('/:param1/:param2/:param3', (String param3, Context context, String param1, String param2) async {
+  router.get('/:param1/:param2/:param3',
+      (String param3, Context context, String param1, String param2) async {
     // you can use params direct trough function arguments, or get from
     // context.req.params = map {param1: 'value1', param2: value2, param3: value3}
     print('GET /' + context.req.params.toString());

@@ -8,21 +8,21 @@ class Route {
 }
 
 class Get extends Route {
-  const Get(String path): super(HttpMethod.get, path);
+  const Get(String path) : super(HttpMethod.get, path);
 }
 
 class Post extends Route {
-  const Post(String path): super(HttpMethod.post, path);
+  const Post(String path) : super(HttpMethod.post, path);
 }
 
 class Patch extends Route {
-  const Patch(String path): super(HttpMethod.patch, path);
+  const Patch(String path) : super(HttpMethod.patch, path);
 }
 
 class Put extends Route {
-  const Put(String path): super(HttpMethod.put, path);
+  const Put(String path) : super(HttpMethod.put, path);
 }
 
 class Delete extends Route {
-  const Delete(String path): super(HttpMethod.delete, path);
+  const Delete(String path) : super(HttpMethod.delete, path);
 }
