@@ -10,7 +10,9 @@ class RouteMatcher {
     params = {};
 
     final pathParts = route.split('/');
+    pathParts.removeWhere((i) => i.isEmpty);
     final uriPaths = uri.split('/');
+    uriPaths.removeWhere((i) => i.isEmpty);
 
     if (pathParts.length != uriPaths.length) {
       matched = false;

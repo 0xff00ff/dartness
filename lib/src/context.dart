@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:mapper/mapper.dart';
+import 'package:logging/logging.dart';
 
 class ContextRequest {
   HttpRequest _req;
@@ -60,10 +61,12 @@ class ContextResponse {
 class Context {
   ContextRequest req;
   ContextResponse res;
+  Logger log;
 
   Map<String, Object> locals = {};
 
-  Context(HttpRequest request) {
+  Context(HttpRequest request, {Logger logger}) {
+    log = logger;
     req = new ContextRequest(request);
     res = new ContextResponse(request.response);
   }

@@ -61,6 +61,7 @@ class Callable {
     if (_type == Types.method) {
       return _callMethod(context);
     }
+    return null;
   }
 
   Future<Object> _callFunction(Context context) async {
@@ -89,7 +90,7 @@ class Callable {
           args.add(context.req.params[arg.name]);
         }
       });
-      return obj.invoke(_method, args);
+      return obj.invoke(_method, args).reflectee;
     }
     return null;
   }

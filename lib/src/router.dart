@@ -59,8 +59,10 @@ class Router implements Callable {
 
   @override
   Future<void> call(Context context) async {
+    var called = false;
     for (var routeItem in _routes) {
-      if (routeItem.isMatching(context.req.method, context.req.requestedUri)) {
+      if (!called && routeItem.isMatching(context.req.method, context.req.requestedUri)) {
+        called = true;
         context.req.params = routeItem.params;
         await routeItem(context);
       }

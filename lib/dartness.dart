@@ -20,10 +20,22 @@ export 'package:dartness/src/httpMethod.dart';
 export 'package:dartness/src/middlewares/cors.dart';
 export 'package:dartness/src/middlewares/static.dart';
 
+import 'package:logging/logging.dart';
+export 'package:logging/logging.dart';
+
 class Dartness {
   Middleware middlewareChain = new Middleware();
 
   HttpServer _http;
+  final Logger logger = new Logger('dartness');
+
+  Dartness({Level level = Level.OFF}) {
+    Logger.root.level = level;
+    Logger.root.onRecord.listen((LogRecord rec) {
+      print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    });
+    logger.info('dartness spawned ...');
+  }
 
   void use(Function middleware, {bool catchError: false}) {
     final callable = new Callable.function(middleware, catchError: catchError);
@@ -35,7 +47,8 @@ class Dartness {
 
     _http = await HttpServer.bind(host, port, shared: true);
     await for (final HttpRequest req in _http) {
-      final context = new Context(req);
+      final context = new Context(req, logger: logger);
+      context.log.info('request is started');
       if (req.method == HttpMethod.post ||
           req.method == HttpMethod.put ||
           req.method == HttpMethod.patch) {
@@ -56,6 +69,7 @@ class Dartness {
       if (!context.res.isClosed()) {
         context.res.close();
       }
+      context.log.info('request is finished');
     }
   }
 
