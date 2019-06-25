@@ -1,5 +1,5 @@
 name: "dartness"
-version: "0.4.1"
+version: "0.4.1+1"
 author: "0xff00ff <0xff00ff@gmail.com>"
 description: "middleware based micro framework for dart. Made for rest api."
 homepage: "https://github.com/0xff00ff/dartness"

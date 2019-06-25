@@ -97,6 +97,7 @@ class Init extends Command {
     final file2 = File.fromUri(Uri.parse(to)).openWrite();
     file
         .openRead()
+        .cast<List<int>>()
         .transform(const Utf8Decoder())
         .transform(const LineSplitter())
         .listen((chunk) {
