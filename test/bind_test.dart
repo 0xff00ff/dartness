@@ -31,7 +31,8 @@ void main() {
     final client = new HttpClient();
     final request = await client.getUrl(Uri.parse('http://localhost:4041'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
     print(result);
     expect(result, 'index');
   });
@@ -41,7 +42,8 @@ void main() {
     final request =
         await client.getUrl(Uri.parse('http://localhost:4041/param3'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
     print(result);
     expect(result, 'param3');
   });

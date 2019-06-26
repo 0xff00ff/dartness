@@ -25,7 +25,8 @@ void main() {
     final request =
         await client.getUrl(Uri.parse('http://localhost:4042/module'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
 
     expect(result, 'm1r1');
   });
@@ -34,7 +35,8 @@ void main() {
     final client = new HttpClient();
     final request = await client.getUrl(Uri.parse('http://localhost:4042/'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
 
     expect(result, 'm1');
   });
