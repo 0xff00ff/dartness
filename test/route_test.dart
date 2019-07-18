@@ -73,7 +73,8 @@ void main() {
     final client = new HttpClient();
     final request = await client.getUrl(Uri.parse('http://localhost:4042/'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
 
     expect(result, 'm1r1');
   });
@@ -83,7 +84,8 @@ void main() {
     final request =
         await client.getUrl(Uri.parse('http://localhost:4042/fake'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
 
     expect(result, 'm1');
   });
@@ -93,7 +95,8 @@ void main() {
     final request =
         await client.getUrl(Uri.parse('http://localhost:4042/middleware'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
 
     expect(result, 'm1m21r2m22');
   });
@@ -103,7 +106,8 @@ void main() {
     final request = await client
         .getUrl(Uri.parse('http://localhost:4042/middleware/broken'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
 
     expect(result, 'm1m22');
   });
@@ -113,7 +117,8 @@ void main() {
     final request = await client
         .getUrl(Uri.parse('http://localhost:4042/middleware/newer'));
     final response = await request.close();
-    final result = await response.transform(utf8.decoder).join();
+    final result =
+        await response.cast<List<int>>().transform(utf8.decoder).join();
     expect(result, 'm1err');
   });
 
