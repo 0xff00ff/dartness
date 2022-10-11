@@ -44,7 +44,7 @@ void main() {
       print('e');
       throw new TestError();
     }
-    return ctx.req.params['q'] + ctx.req.params['w'] + ctx.req.params['e'];
+    return ctx.req.params['q']! + ctx.req.params['w']! + ctx.req.params['e']!;
   });
 
   router.get('/:qwe:(\\w)/:asd(\\w)', (Context ctx) {
@@ -56,7 +56,7 @@ void main() {
       print('asd');
       throw new TestError();
     }
-    return ctx.req.params['qwe'] + ctx.req.params['asd'];
+    return ctx.req.params['qwe']! + ctx.req.params['asd']!;
   }, useRegexp: true);
 
   app.use(router);

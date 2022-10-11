@@ -73,9 +73,12 @@ class Router implements Callable {
     final instance = reflect(obj);
     instance.type.instanceMembers.forEach((Symbol name, MethodMirror method) {
       method.metadata.forEach((InstanceMirror metaItem) {
-        if (metaItem.reflectee is Route) {
-          final Route inst = metaItem.reflectee;
-          route(inst.method, inst.path, Callable.method(instance, name));
+        final dynamic ref = metaItem.reflectee;
+        if (ref is Route) {
+          final inst = ref;
+          if (instance is ClosureMirror) {
+            route(inst.method, inst.path, Callable.method(instance, name));
+          }
         }
       });
     });

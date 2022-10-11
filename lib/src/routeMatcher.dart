@@ -24,7 +24,13 @@ class RouteMatcher {
     for (var q = 0; q < len; q++) {
       if (pathParts[q].startsWith(':')) {
         final key = pathParts[q].replaceAllMapped(
-            new RegExp('^:([a-z]+).*\$'), (Match match) => match.group(1));
+            new RegExp('^:([a-z]+).*\$'), (Match match) {
+              final f = match.group(1);
+              if (f != null) {
+                return f;
+              }
+              return  '';
+            });
 
         // check if key is regexp value
         if (new RegExp('^:[a-z]+\$', caseSensitive: false)
@@ -36,7 +42,11 @@ class RouteMatcher {
           final regexp = pathParts[q].replaceFirst(new RegExp('^:[a-z]+'), '');
           if (new RegExp(regexp).hasMatch(uriPaths[q])) {
             final match = new RegExp(regexp).firstMatch(uriPaths[q]);
-            params[key] = match.groupCount > 0 ? match.group(1) : '';
+            var v = '';
+            if (match!.groupCount > 0) {
+              v = match.group(1)!;
+            }
+            params[key] =  v;
           } else {
             matched = false;
             return;

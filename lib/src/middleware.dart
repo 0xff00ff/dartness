@@ -35,9 +35,9 @@ class Middleware {
         }
       } catch (e) {
         isError = true;
-        print('catched an error');
+        print('caught an error');
         print(e);
-        context.error = e;
+        context.error = AssertionError(e);
       }
 
       if (context.res.isClosed()) {
@@ -45,8 +45,9 @@ class Middleware {
       }
     }
 
-    if (isError) {
-      throw context.error;
+    final err = context.error;
+    if (isError && err != null) {
+        throw err;
     }
   }
 }

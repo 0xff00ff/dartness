@@ -4,7 +4,7 @@ import 'package:mapper/mapper.dart';
 import 'package:logging/logging.dart';
 
 class ContextRequest {
-  HttpRequest _req;
+  final HttpRequest _req;
   Map<String, dynamic> body = <String, dynamic>{};
   Map<String, String> params = {};
 
@@ -15,44 +15,51 @@ class ContextRequest {
   Uri get requestedUri => _req.requestedUri;
   HttpHeaders get headers => _req.headers;
 
-  T getPostAs<T>() => decode<T>(body);
+  T getPostAs<T>() => decode<T>(body)!;
 }
 
 class ContextResponse {
-  HttpResponse _res;
+  HttpResponse res;
   bool _closed = false;
   bool _statusCodeChanged = false;
 
-  ContextResponse(HttpResponse res) {
-    _res = res;
-    _res.statusCode = 404;
+  ContextResponse(this.res) {
+    res.statusCode = 404;
   }
 
-  HttpResponse get response => _res;
-  HttpHeaders get headers => _res.headers;
+  HttpResponse get response => res;
+  HttpHeaders get headers => res.headers;
 
-  int get statusCode => _res.statusCode;
+  int get statusCode => res.statusCode;
 
   set statusCode(int code) {
-    _res.statusCode = code;
+    res.statusCode = code;
     _statusCodeChanged = true;
   }
 
   void write(Object obj) {
     if (!_statusCodeChanged) {
-      _res.statusCode = 200;
+      res.statusCode = 200;
       _statusCodeChanged = true;
     }
-    _res.write(obj);
+    res.write(obj);
+  }
+
+  void writeJson(Object obj) {
+    if (!_statusCodeChanged) {
+      res.statusCode = 200;
+      _statusCodeChanged = true;
+    }
+    res.write(obj);
   }
 
   Future<dynamic> close() {
     if (!_closed) {
       _closed = true;
-      return _res.close();
+      return res.close();
     }
 
-    return null;
+    return Future<dynamic>.value(null);
   }
 
   bool isClosed() => _closed;
@@ -61,15 +68,16 @@ class ContextResponse {
 class Context {
   ContextRequest req;
   ContextResponse res;
-  Logger log;
+  Logger? log;
 
   Map<String, Object> locals = {};
 
-  Context(HttpRequest request, {Logger logger}) {
-    log = logger;
-    req = new ContextRequest(request);
-    res = new ContextResponse(request.response);
+  Context(HttpRequest request, {Logger? logger = null}):
+        req = new ContextRequest(request), res = new ContextResponse(request.response) {
+    if (logger != null) {
+      log = logger;
+    }
   }
 
-  Object error;
+  Error? error;
 }

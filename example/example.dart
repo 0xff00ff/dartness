@@ -29,14 +29,14 @@ void main() {
       .get('/secret',
           (Context context) async => context.res.write('secret word'))
       .useBefore((Context context) {
-    if (context.req.headers.value('X-Secret-Code').isEmpty) {
+    if (context.req.headers.value('X-Secret-Code')!.isEmpty) {
       throw new StateError('You shall not pass!');
     }
   });
   router.get(r'/:blogId(\d+$)', (String blogId, Context context) {
     // will match on route: /some-blog-title-1234/
     // regex params can be used in function arguments as well
-    final reqBlogId = context.req.params['blogId']; // 1234
+    final reqBlogId = context.req.params['blogId']!; // 1234
     context.res.write('blogId is ' + blogId + ' and ' + reqBlogId);
   });
 

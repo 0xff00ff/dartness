@@ -14,10 +14,11 @@ class CrudService {
   Map<String, Object> getAll() => _data;
 
   Object getOne(String key) {
-    if (_data.containsKey(key)) {
-      return _data[key];
+    final item = _data[key];
+    if (item != null) {
+      return item;
     }
-    return null;
+    return '';
   }
 
   bool delete(String id) {
@@ -47,24 +48,21 @@ void main() {
   });
 
   router.get('/:id', (Context ctx) {
-    final id = ctx.req.params['id'];
+    final id = ctx.req.params['id']!;
     print('GET /' + id);
     ctx.locals['data'] = service.getOne(id);
   });
 
   router.delete('/:id', (Context ctx) {
-    final id = ctx.req.params['id'];
+    final id = ctx.req.params['id']!;
     print('DELETE /' + id);
     ctx.locals['data'] = service.delete(id);
   });
   router.post('/', (Context ctx) {
     print('POST /');
-    if (ctx.req.body.containsKey('data')) {
-      final id = service.insert(ctx.req.body['data']);
-      ctx.locals['data'] = id;
-    } else {
-      throw new Error();
-    }
+    final Object index = ctx.req.body['data'] as Object;
+    final id = service.insert(index);
+    ctx.locals['data'] = id;
   });
 
   app.use(router);

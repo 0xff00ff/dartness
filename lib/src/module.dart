@@ -10,7 +10,7 @@ class Module implements Callable {
   @override
   bool catchError = false;
   Middleware middlewareChain = new Middleware();
-  String _url;
+  final String _url;
   @override
   List<Argument> arguments = <Argument>[];
 
