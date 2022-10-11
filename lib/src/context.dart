@@ -72,8 +72,9 @@ class Context {
 
   Map<String, Object> locals = {};
 
-  Context(HttpRequest request, {Logger? logger = null}):
-        req = new ContextRequest(request), res = new ContextResponse(request.response) {
+  Context(HttpRequest request, {Logger? logger})
+      : req = new ContextRequest(request),
+        res = new ContextResponse(request.response) {
     if (logger != null) {
       log = logger;
     }

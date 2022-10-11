@@ -39,7 +39,6 @@ linter:
     - always_require_non_null_named_parameters
     - annotate_overrides
     - avoid_annotating_with_dynamic
-    - avoid_as
     - avoid_empty_else
     - avoid_init_to_null
     - avoid_null_checks_in_equality_operators

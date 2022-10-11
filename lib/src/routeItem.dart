@@ -35,12 +35,12 @@ class RouteItem {
   }
 
   RouteItem useBefore(Function middleware, {bool catchError = false}) {
-    _before.add(new Callable.function(middleware, catchError: catchError));
+    _before.add(new FunctionCallable.init(middleware, catchError: catchError));
     return this;
   }
 
   RouteItem useAfter(Function middleware, {bool catchError = false}) {
-    _after.add(new Callable.function(middleware, catchError: catchError));
+    _after.add(new FunctionCallable.init(middleware, catchError: catchError));
     return this;
   }
 }

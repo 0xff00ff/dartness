@@ -38,7 +38,8 @@ class Dartness {
   }
 
   void use(Function middleware, {bool catchError: false}) {
-    final callable = new Callable.function(middleware, catchError: catchError);
+    final callable =
+        new FunctionCallable.init(middleware, catchError: catchError);
     middlewareChain.add(callable);
   }
 
@@ -57,10 +58,9 @@ class Dartness {
             : null;
         final body = await utf8.decodeStream(req);
         if (contentType?.mimeType == 'application/json') {
-          final Map<String, dynamic>jsonval = jsonDecode(body) as Map<String, dynamic>;
+          final jsonval = jsonDecode(body) as Map<String, dynamic>;
           context.req.body = jsonval;
         }
-
       }
 
       try {

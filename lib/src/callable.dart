@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:mirrors';
 
+import 'package:dartness/dartness.dart';
 import 'package:dartness/src/context.dart';
 
 class Types {
@@ -17,57 +18,68 @@ class Argument {
   const Argument(this.name, this.symbolName, this.type, this.symbolType);
 }
 
-class Callable {
-  String _type = Types.function;
-  // function properties
-  ClosureMirror? _callable;
+abstract class Callable {
+  Future<void> call(Context context) async {
+    throw new UnimplementedError('method call is unimplemented');
+  }
+
+  bool canCatchError() => false;
+}
+
+class MethodCallable implements Callable {
+  final InstanceMirror instance;
+  final MethodMirror _callable;
   bool catchError = false;
-  // object properties
-  Symbol? _method;
   List<Argument> arguments = <Argument>[];
 
-  Callable.function(Function callable, {this.catchError = false}) {
-    _type = Types.function;
+  MethodCallable.init(this.instance, this._callable,
+      {this.catchError = false}) {
+    _callable.parameters.forEach((p) {
+      final name = MirrorSystem.getName(p.simpleName);
+      final type = MirrorSystem.getName(p.type.simpleName);
+      arguments.add(new Argument(name, p.simpleName, type, p.type.simpleName));
+    });
+  }
+
+  @override
+  Future<dynamic> call(Context context) async {
+    final args = <dynamic>[];
+    arguments.forEach((arg) {
+      if (arg.type == 'Context') {
+        args.add(context);
+      }
+      if (context.req.params.keys.contains(arg.name)) {
+        args.add(context.req.params[arg.name]);
+      }
+    });
+
+    return instance.invoke(_callable.simpleName, args);
+  }
+
+  @override
+  bool canCatchError() => catchError;
+}
+
+class FunctionCallable implements Callable {
+  ClosureMirror? _callable;
+  bool catchError = false;
+  List<Argument> arguments = <Argument>[];
+
+  FunctionCallable.init(Function callable, {this.catchError = false}) {
     final c = reflect(callable);
     if (c is ClosureMirror) {
       _callable = c;
       _callable?.function.parameters.forEach((ParameterMirror p) {
         final name = MirrorSystem.getName(p.simpleName);
         final type = MirrorSystem.getName(p.type.simpleName);
-        arguments.add(
-            new Argument(name, p.simpleName, type, p.type.simpleName));
+        arguments
+            .add(new Argument(name, p.simpleName, type, p.type.simpleName));
       });
     }
   }
 
-  Callable.method(ClosureMirror object, Symbol method, {this.catchError = false}) {
-    _type = Types.method;
-    _callable = object;
-    _method = method;
-    final InstanceMirror obj = _callable!;
-    obj.type.instanceMembers.forEach((key, value) {
-      if (key == method) {
-        value.parameters.forEach((p) {
-          final name = MirrorSystem.getName(p.simpleName);
-          final type = MirrorSystem.getName(p.type.simpleName);
-          arguments
-              .add(new Argument(name, p.simpleName, type, p.type.simpleName));
-        });
-      }
-    });
-  }
-
-  Future<void> call(Context context) async {
-    if (_type == Types.function) {
-      _callFunction(context);
-    }
-    if (_type == Types.method) {
-      _callMethod(context);
-    }
-    return null;
-  }
-
-  Future<dynamic> _callFunction(Context context) async {
+  @override
+  Future<dynamic> call(Context context) async {
     final caller = _callable!;
     final args = <dynamic>[];
     arguments.forEach((arg) {
@@ -81,20 +93,6 @@ class Callable {
     return caller.apply(args).reflectee;
   }
 
-  Future<dynamic> _callMethod(Context context) async {
-    if (_callable is InstanceMirror) {
-      final InstanceMirror obj = _callable!;
-      final args = <dynamic>[];
-      arguments.forEach((arg) {
-        if (arg.type == 'Context') {
-          args.add(context);
-        }
-        if (context.req.params.keys.contains(arg.name)) {
-          args.add(context.req.params[arg.name]);
-        }
-      });
-      return obj.invoke(_method!, args).reflectee;
-    }
-    return null;
-  }
+  @override
+  bool canCatchError() => catchError;
 }

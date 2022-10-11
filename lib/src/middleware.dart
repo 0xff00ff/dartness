@@ -23,14 +23,14 @@ class Middleware {
       final middleware = _middlewareStack[q];
       try {
         if (isError) {
-          if (middleware.catchError) {
+          if (middleware.canCatchError()) {
             await middleware.call(context);
             isError = false;
             context.error = null;
           } else {
             continue;
           }
-        } else if (middleware.catchError == false) {
+        } else if (!middleware.canCatchError()) {
           await middleware.call(context);
         }
       } catch (e) {
@@ -47,7 +47,7 @@ class Middleware {
 
     final err = context.error;
     if (isError && err != null) {
-        throw err;
+      throw err;
     }
   }
 }

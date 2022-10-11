@@ -9,8 +9,8 @@ class A {
 
   @Get('/:param')
   Future<void> param(Context c, String param) async {
-      print('param');
-      c.res.write(param);
+    print('param');
+    c.res.write(param);
   }
 }
 

@@ -8,7 +8,8 @@ class StaticMiddleware {
   String directory;
   String uri = '';
   String index;
-  final String _dir = Directory.current.path.substring(0, Directory.current.path.length - 0);
+  final String _dir =
+      Directory.current.path.substring(0, Directory.current.path.length - 0);
 
   StaticMiddleware(this.directory, {String? uri, this.index = ''}) {
     if (!directory.startsWith('/')) {

@@ -60,7 +60,7 @@ void main() {
   });
   router.post('/', (Context ctx) {
     print('POST /');
-    final Object index = ctx.req.body['data'] as Object;
+    final index = ctx.req.body['data'] as Object;
     final id = service.insert(index);
     ctx.locals['data'] = id;
   });

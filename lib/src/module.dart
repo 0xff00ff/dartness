@@ -7,17 +7,15 @@ import 'package:dartness/src/routeItem.dart';
 import 'package:dartness/src/middleware.dart';
 
 class Module implements Callable {
-  @override
   bool catchError = false;
   Middleware middlewareChain = new Middleware();
   final String _url;
-  @override
   List<Argument> arguments = <Argument>[];
 
   Module(this._url);
 
   void addMiddleware(Function middleware) {
-    middlewareChain.add(new Callable.function(middleware));
+    middlewareChain.add(FunctionCallable.init(middleware));
   }
 
   void addRouter(Router router) {
@@ -26,7 +24,7 @@ class Module implements Callable {
 
   @override
   Future<void> call(Context context) async {
-    final callable = new Callable.function((Context context) async {
+    final callable = FunctionCallable.init((Context context) async {
       await middlewareChain.execute(context);
     });
     final route = new RouteItem('*', _url, callable);
@@ -34,4 +32,7 @@ class Module implements Callable {
       await route.callback(context);
     }
   }
+
+  @override
+  bool canCatchError() => catchError;
 }
